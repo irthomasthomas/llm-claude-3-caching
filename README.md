@@ -30,53 +30,25 @@ llm -m claude-3-opus 'Fun facts about squirrels'
 llm -m claude-3-sonnet 'Fun facts about walruses'
 llm -m claude-3-haiku 'Fun facts about armadillos'
 ```
-
-## New Features
-
-### Stop Sequences
+Images are supported too:
+```bash
+llm -m claude-3.5-sonnet 'describe this image' -a https://static.simonwillison.net/static/2024/pelicans.jpg
+llm -m claude-3-haiku 'extract text' -a page.png
+```
+## Assistant prefil and stop sequences
 Control when the model stops generating text:
-
 ```bash
 llm -m claude-3-opus -o stop_sequences '["END", "STOP"]' 'Write a story'
 ```
 
-### Prefill
 Provide a starting point for the model to continue from:
-
 ```bash
 llm -m claude-3-opus -o prefill "It was a dark and stormy night" 'Continue the story'
 ```
-
-## Usage Examples
-
-Get creative with Claude 3 models:
-
-1. Basic prompt:
-   ```bash
-   llm -m claude-3-haiku 'Haiku about spring'
-   ```
-
-2. Using stop sequences:
-   ```bash
-   llm -m claude-3-sonnet -o stop_sequences '["THE END"]' 'Short mystery story'
-   ```
-
-3. With prefill:
-   ```bash
-   llm -m claude-3-opus -o prefill "In the year 2050" 'Describe the future'
-   ```
-
-4. Combining options:
-   ```bash
-   llm -m claude-3.5-sonnet -o stop_sequences '["DONE"]' -o prefill "Recipe for happiness:" 'Complete the recipe'
-   ```
-
-Explore all available options:
+Combining options:
 ```bash
-llm models --options
+llm -m claude-3.5-sonnet -o stop_sequences '["DONE"]' -o prefill "Recipe for happiness:" 'Complete the recipe'
 ```
-
-Remember to check the [Anthropic documentation](https://docs.anthropic.com) for detailed information on Claude 3 capabilities and best practices.
 
 ## Development
 
@@ -93,4 +65,16 @@ llm install -e '.[test]'
 To run the tests:
 ```bash
 pytest
+```
+
+This project uses [pytest-recording](https://github.com/kiwicom/pytest-recording) to record Anthropic API responses for the tests.
+
+If you add a new test that calls the API you can capture the API response like this:
+```bash
+PYTEST_ANTHROPIC_API_KEY="$(llm keys get claude)" pytest --record-mode once
+```
+You will need to have stored a valid Anthropic API key using this command first:
+```bash
+llm keys set claude
+# Paste key here
 ```
